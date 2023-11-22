@@ -47,3 +47,22 @@ def impurity_gain(root_classes, child_classes, impurity_mode='gini'):
 # print("Purity Gain:", gain)
 
 
+def kmeans2_main(data, centroids):
+    c1, c2 = centroids
+    dif1, dif2 = data - c1, data - c2
+    cat1, cat2 = [], []
+
+    for i in range(0, len(data)):
+        if abs(dif1[i]) <= abs(dif2[i]):
+            cat1.append(data[i])
+        elif abs(dif2[i]) <= abs(dif1[i]):
+            cat2.append(data[i])
+        else:
+            print("ERROR")
+
+    # Print clusterings
+    print(cat1, cat2)
+
+    # Return new centroids
+    return np.array([np.mean(cat1), np.mean(cat2)])
+
