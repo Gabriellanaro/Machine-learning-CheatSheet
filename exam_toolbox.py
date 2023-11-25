@@ -937,8 +937,8 @@ class similarity:
             else:
                 f01 += 1
                 # different class, same cluster
-        jaccard = np.float(f11) / (f01 + f10 + f11)
-        SMC = np.float((f11 + f00) / (f00 + f01 + f10 + f11))
+        jaccard = float(f11) / (f01 + f10 + f11)
+        SMC = float((f11 + f00) / (f00 + f01 + f10 + f11))
         cos = x.T @ y / (np.linalg.norm(x) * np.linalg.norm(y))
         similarities = [SMC, jaccard, cos]
         names = ["SMC", "Jaccard", "cos"]
