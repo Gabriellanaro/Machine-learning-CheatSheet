@@ -1170,7 +1170,7 @@ class adaboost:
             eps = np.mean(delta == 1)
             alpha = 0.5 * np.log((1 - eps) / eps)
             s = np.array([-1 if d == 0 else 1 for d in delta])
-
+            print(alpha)
             # Calculate weight vector and normalize it
             weights = weights.T * np.exp(s * alpha)
             weights /= np.sum(weights)

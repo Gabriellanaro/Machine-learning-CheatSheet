@@ -1,4 +1,5 @@
 import numpy as np
+from fractions import Fraction
 
 # decision tree impurity gini entropy 
 def impurity(classes, impurity_mode='gini'):
@@ -66,3 +67,82 @@ def kmeans2_main(data, centroids):
     # Return new centroids
     return np.array([np.mean(cat1), np.mean(cat2)])
 
+
+def adaboost(delta, rounds):
+    """
+    delta : list of misclassified observations, 
+    0 = correctly classified, 1 = misclassified
+
+    rounds [int] : how many rounds to run
+    
+    !!!CALL FOR EACH ROUND!!!
+    
+    Example: 
+    Given a classification problem with 25 observations in total, 
+    with 5 of them being misclassified in round 1, the weights can be calculated as:
+    miss = np.zeros(25) 
+    miss[:5] = 1 
+    te.adaboost(miss, 1)
+
+    The weights are printed 
+    """
+    # Initial weights
+    delta = np.array(delta)
+    n = len(delta)
+    weights = np.ones(n) / n
+
+    # Run all rounds
+    for i in range(rounds):
+        eps = np.mean(delta == 1)
+        alpha = 0.5 * np.log((1 - eps) / eps)
+        s = np.array([-1 if d == 0 else 1 for d in delta])
+        print(alpha)
+        
+        # Calculate weight vector and normalize it
+        weights = weights.T * np.exp(s * alpha)
+        weights /= np.sum(weights)
+
+        # Print resulting weights
+    for i, w in enumerate(weights):
+        print('w[%i]: %f' % (i, w))
+
+
+
+def cunfusion_matrix_stats(TN, TP, FN, FP):
+    accuracy = Fraction(TP + TN, TP + TN + FP + FN)
+    recall = Fraction(TP, TP + FN)
+    specificity = Fraction(TN, TN + FP)
+    precision = Fraction(TP, TP + FP)
+    f1_score = Fraction(2 * (precision * recall), precision + recall)
+    FPR = Fraction(1 - specificity)
+    TNR = Fraction(TN, TN + FP)
+    balanced_accuracy = Fraction(recall + specificity, 2)
+
+    metrics = {
+        "Accuracy": accuracy,
+        "Recall": recall,
+        "Specificity": specificity,
+        "Precision": precision,
+        "F1-score": f1_score,
+        "FPR": FPR,
+        "TNR": TNR,
+        "Balanced Accuracy": balanced_accuracy
+    }
+
+    results = {}
+    for metric_name, value in metrics.items():
+        decimal_value = float(value)
+        fractional_value = f" {value.numerator}/{value.denominator} "
+        results[metric_name] = f"{metric_name} = {fractional_value} = {decimal_value:.5f}"
+
+    return results
+
+# # Esempio di utilizzo
+# TN = 14
+# TP = 14
+# FN = 18
+# FP = 10
+
+# metrics = ef.cunfusion_matrix_stats(TN, TP, FN, FP)
+# for metric, value in metrics.items():
+#     print(value)
