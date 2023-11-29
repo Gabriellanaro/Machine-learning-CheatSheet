@@ -8,6 +8,7 @@ from itertools import combinations
 import pandas as pd
 import matplotlib.pyplot as plt
 import sklearn.metrics as metrics
+import sklearn.metrics.cluster as cluster_metrics
 
 
 # decision tree impurity gini entropy 
@@ -187,6 +188,7 @@ def draw_dendrogram(x, method='single', metric='euclidean'):
 # O10 1.28 7.66 1.05 0.56 1.28 3.00 2.31 1.46 1.44 0"""
 # draw_dendrogram(a, method='average')
 
+
 # a2 = '5.7 6.0 6.2 6.3 6.4 6.6 6.7 6.9 7.0 7.4'
 
 # print(draw_dendrogram(a2, method='average'))
@@ -306,3 +308,23 @@ def plot_roc(true_val, pred_val):
     plt.ylabel("True Positive Rate")
     plt.xlabel("False Positive Rate")
     plt.show()
+
+
+
+
+def normalized_mutual_info_score(y, clusterid):
+    '''
+    normalization of the Mutual Information (MI) score to scale the results between 0 (no mutual information) and 1 (perfect correlation)
+    param:
+    y = list of correct labels
+    clusterid = list of labels assigned by the clustering
+
+    returns the normalized mutual informationof the two clusterings (the correct clustering and the other one). 
+    '''
+
+    NMI = cluster_metrics.normalized_mutual_info_score(y,clusterid)
+    return NMI
+
+# y =[0,0,0,1,1,1,1,1,2,2]
+# clusterid =[0,2,0,1,0,1,0,0,0,0]
+# print(normalized_mutual_info_score(y,clusterid))
