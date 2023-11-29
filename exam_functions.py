@@ -319,10 +319,11 @@ def normalized_mutual_info_score(y, clusterid):
     y = list of correct labels
     clusterid = list of labels assigned by the clustering
 
-    returns the normalized mutual informationof the two clusterings (the correct clustering and the other one). 
+    returns the normalized mutual informationof the two clusterings (the correct clustering and the other one). average_method is set to default to geometric (exercises in the exam want
+    geometric method (always?)). other average methods are min, max.
     '''
 
-    NMI = cluster_metrics.normalized_mutual_info_score(y,clusterid)
+    NMI = cluster_metrics.normalized_mutual_info_score(y,clusterid, average_method='geometric')
     return NMI
 
 # y =[0,0,0,1,1,1,1,1,2,2]
