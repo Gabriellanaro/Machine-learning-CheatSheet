@@ -9,6 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sklearn.metrics as metrics
 import sklearn.metrics.cluster as cluster_metrics
+import math
 
 
 # decision tree impurity gini entropy 
@@ -329,3 +330,15 @@ def normalized_mutual_info_score(y, clusterid):
 # y =[0,0,0,1,1,1,1,1,2,2]
 # clusterid =[0,2,0,1,0,1,0,0,0,0]
 # print(normalized_mutual_info_score(y,clusterid))
+
+
+def empirical_correlation_from_covariance(cov_matrix):
+        """
+        cov_matrix : 2d array of covariance matrix, eg: [[0.2639, 0.0803], [0.0803, 0.0615]]
+        Calculates the correlation between the two x's in the covariance matrix
+        The correlation coefficient is defined as: p=cov(x,y)/(sigma_x*sigma_y)
+        """
+        cov = np.array(cov_matrix)
+        p = cov[1][0]/math.sqrt((cov[0][0]*cov[1][1]))
+        print (p)
+        return p
