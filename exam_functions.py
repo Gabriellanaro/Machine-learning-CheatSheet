@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import sklearn.metrics as metrics
 import sklearn.metrics.cluster as cluster_metrics
 import math
+from exam_toolbox import *
 
 
 # decision tree impurity gini entropy 
@@ -342,3 +343,53 @@ def empirical_correlation_from_covariance(cov_matrix):
         p = cov[1][0]/math.sqrt((cov[0][0]*cov[1][1]))
         print (p)
         return p
+
+
+
+def rule_stats(df, X, Y, index=0):
+        """
+        calculates support and confidence of a rule
+        ----------------------
+        parameters:
+        -----------
+        df = binary dataframe with rows as transactions and colums representing the attributes
+        X = list with the X itemsets
+        Y = list with the Y itemsets
+        """
+        X = np.array(X) - index
+        Y = np.array(Y) - index
+
+        X_item = df.loc[:, X]
+        Y_item = df.loc[:, Y]
+        items = pd.concat([X_item, Y_item], axis=1)
+
+        support = np.mean(np.mean(items, axis=1) == 1)
+        confidence = np.sum(np.mean(items, axis=1) == 1) / np.sum(
+            np.mean(X_item, axis=1) == 1
+        )
+
+        the_rule = "{{{}}} ---> {{{}}}".format(X, Y)
+
+        print("The rule is {}".format(the_rule))
+        print("The support for the rule is {}".format(support))
+        print("The confidence for the rule is {}".format(confidence))
+
+##example:
+# a = association_mining()
+# data=[[1,0,1,0,1,0,1,0,1,0,1,0],
+# [0,1,0,1,0,1,0,1,0,1,0,1],
+# [1,0,0,1,1,0,1,0,1,0,1,0],
+# [1,0,1,0,1,0,0,1,0,1,1,0],
+# [0,1,1,0,1,0,1,0,1,0,1,0],
+# [0,1,0,1,0,1,0,1,0,1,0,1],
+# [0,1,1,0,1,0,0,1,0,1,0,1],
+# [1,0,1,0,1,0,1,0,0,1,0,1],
+# [0,1,0,1,1,0,1,0,0,1,0,1],
+# [1,0,0,1,0,1,0,1,0,1,1,0]]
+
+# df= pd.DataFrame(data)
+# x=[3,5,7,9]
+# #x=pd.DataFrame(x)
+# y=[11]
+# #y=pd.DataFrame(y)
+# a.rule_stats(df,x,y)
