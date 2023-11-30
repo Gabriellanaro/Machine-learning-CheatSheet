@@ -348,7 +348,7 @@ def empirical_correlation_from_covariance(cov_matrix):
 
 def rule_stats(df, X, Y, index=0):
         """
-        calculates support and confidence of a rule
+        calculates support and confidence of an association rule
         ----------------------
         parameters:
         -----------
@@ -393,3 +393,55 @@ def rule_stats(df, X, Y, index=0):
 # y=[11]
 # #y=pd.DataFrame(y)
 # a.rule_stats(df,x,y)
+
+
+def itemset_support(itemset):
+        """
+        Returns the support value for the given itemset
+        itemset is a pandas dataframe with one row per basket, and one column per item
+        easy to compute by hand (transactions that contain the itemset / number of transactions), use this function for big datasets
+        """
+
+        # Get the count of baskets where all the items are 1
+        baskets = itemset.iloc[:,0].copy()
+        for col in itemset.columns[1:]:
+            baskets = baskets & itemset[col]
+
+        return baskets.sum() / float(len(baskets))
+
+
+def apriori_algorithm(df, support_min):
+        """
+        df: dataframe with each row being a basket, and each column being an item
+        support_min: minimum support level
+        Remember that the printed itemsets start from 0!
+        return the frequent itemsets, that is to say the itemsets with support>support_min
+        """
+        itemsets = []
+        n = len(df)
+        for itsetSize in np.arange(1, len(df.columns) + 1): # Start with 1-itemsets, keep going till n_attributes-itemsets
+            itemsets.append("L: ")
+            itemsets.append(itsetSize)
+            for combination in IT.combinations(df.columns, itsetSize):
+                sup = itemset_support(df[list(combination)])
+                if sup > support_min:
+                    itemsets.append(set(combination))
+        print(itemsets)
+        return itemsets
+
+#esempio:
+# data=[[1,0,1,0,1,0,1,0,1,0,1,0],
+# [0,1,0,1,0,1,0,1,0,1,0,1],
+# [1,0,0,1,1,0,1,0,1,0,1,0],
+# [1,0,1,0,1,0,0,1,0,1,1,0],
+# [0,1,1,0,1,0,1,0,1,0,1,0],
+# [0,1,0,1,0,1,0,1,0,1,0,1],
+# [0,1,1,0,1,0,0,1,0,1,0,1],
+# [1,0,1,0,1,0,1,0,0,1,0,1],
+# [0,1,0,1,1,0,1,0,0,1,0,1],
+# [1,0,0,1,0,1,0,1,0,1,1,0]]
+
+# df= pd.DataFrame(data)
+# apriori_algorithm(df, 0.4)
+#l'output è del tipo: ['L: ', 1, {0}, {1}, {2}, {3}, {4}, {6}, {7}, {9}, {10}, {11}, 'L: ', 2, {2, 4}, {4, 6}, {9, 7}, {9, 11}, 'L: ', 3, 'L: ', 4, 'L: ', 5 etc etc
+# L:1 significa itemset con una sola feature, L:2 istemset con due features etc etc
