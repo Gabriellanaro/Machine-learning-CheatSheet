@@ -395,20 +395,6 @@ def rule_stats(df, X, Y, index=0):
 # a.rule_stats(df,x,y)
 
 
-def itemset_support(itemset):
-        """
-        Returns the support value for the given itemset
-        itemset is a pandas dataframe with one row per basket, and one column per item
-        easy to compute by hand (transactions that contain the itemset / number of transactions), use this function for big datasets
-        """
-
-        # Get the count of baskets where all the items are 1
-        baskets = itemset.iloc[:,0].copy()
-        for col in itemset.columns[1:]:
-            baskets = baskets & itemset[col]
-
-        return baskets.sum() / float(len(baskets))
-
 
 def apriori_algorithm(df, support_min):
         """
@@ -423,7 +409,11 @@ def apriori_algorithm(df, support_min):
             itemsets.append("L: ")
             itemsets.append(itsetSize)
             for combination in IT.combinations(df.columns, itsetSize):
-                sup = itemset_support(df[list(combination)])
+                itemset = df[list(combination)]
+                baskets = itemset.iloc[:,0].copy()
+                for col in itemset.columns[1:]:
+                    baskets = baskets & itemset[col]
+                sup =  baskets.sum() / float(len(baskets))
                 if sup > support_min:
                     itemsets.append(set(combination))
         print(itemsets)

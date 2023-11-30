@@ -17,7 +17,7 @@ import re
 from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 from scipy.spatial.distance import squareform
 from sklearn.preprocessing import label_binarize
-#from apyori import apriori
+from apyori import apriori
 from sklearn.cluster import KMeans
 import sklearn.metrics as metrics
 import itertools as IT
