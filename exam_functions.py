@@ -435,3 +435,66 @@ def apriori_algorithm(df, support_min):
 # apriori_algorithm(df, 0.4)
 #l'output è del tipo: ['L: ', 1, {0}, {1}, {2}, {3}, {4}, {6}, {7}, {9}, {10}, {11}, 'L: ', 2, {2, 4}, {4, 6}, {9, 7}, {9, 11}, 'L: ', 3, 'L: ', 4, 'L: ', 5 etc etc
 # L:1 significa itemset con una sola feature, L:2 istemset con due features etc etc
+
+def var_explained(S, plot=True, show_df=True):
+    """
+    S = list of variances of components (can be read from the S/Sigma matrix)
+    plot = to plot or not
+    show_df = to show df with varaince explained or not
+    """
+    S = np.array(S)
+
+    # df with variance explained
+    df_var_exp = pd.DataFrame(columns=["k", "var_explained"])
+    for i in range(len(S)):
+        t = np.sum(S[0 : i + 1] ** 2) / np.sum(S ** 2)
+        df_var_exp.loc[i] = [i + 1, t]
+    if plot:
+        # plot of variance explained
+        plt.plot(df_var_exp["k"], df_var_exp["var_explained"])
+        plt.scatter(df_var_exp["k"], df_var_exp["var_explained"])
+        plt.title("Variance explained")
+        plt.xlim(np.min(df_var_exp["k"]), np.max(df_var_exp["k"]))
+        plt.ylim(0, 1)
+        plt.show()
+
+    if show_df:
+        print(df_var_exp)
+    return df_var_exp
+
+
+
+def gmm_weighted_density(sigma, dim, vect_mean, weights):
+    """
+    Computes the weighted probability density in a Gaussian Mixture Model (GMM).
+
+    Args:
+    sigma (float): Standard deviation of the distribution
+    dim (int): Dimensionality of the distribution (number of observations)
+    vect_mean (list): List of mean values of observations (or distances from the matrix given)
+    weights (list): List of weights corresponding to the observations (usually equally weigthed)
+
+    Returns:
+    float: Calculated probability density considering different weights for each observation.
+    """
+    # Convert the weights into a NumPy array
+    weights_array = np.array(weights)
+    
+    # Calculate the prefactors for each observation
+    prefactor = weights_array / ((2 * np.pi * sigma**2) ** (dim / 2))
+
+    # Calculate exponentials of the observation mean values
+    exp_tot = np.exp(-np.array(vect_mean) ** 2 / (2 * sigma**2))
+
+    # Compute the weighted sum of prefactors and exponentials
+    result = np.dot(prefactor, exp_tot)
+
+    return result
+
+## EXAMPLE OF USE
+# weigths = [0.3333, 0.3333, 0.3333]
+# vect_dist = np.array([2.11, 1.15, 1.09])
+# sigma = 0.5
+# dim = 10
+
+# gmm_weighted_density(sigma, dim, vect_dist, weigths)
