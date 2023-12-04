@@ -624,3 +624,30 @@ def knn_dist_pred_3d(self, df, class1, class2, class3, K, show=False):
         print("The predictions when using the {} nearest neighbors are: ".format(K))
         print(predictions)
     return predictions
+
+
+
+def softmax(x):
+    """
+    calcola funzione di attivazione softmax dato in input un'osservazione x di qualsiasi dimensione
+    """
+    exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+    return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
+
+def multinomial_regression(x, w):
+    """
+        calcola la probabilità che l'osservazione x appartenga a una classe usando multinomial regression classifier
+        -------------------------------------------------------
+        x = vettore di osservazioni di qualsiasi dimensione
+        w = vettore dei pesi (un peso per ogni classe, i pesi devono avere la stessa dimensione delle osservazioni)
+        """
+    for i, x_i in enumerate(x):
+        probabilities = softmax(np.dot(x_i, np.transpose(w)))
+        for j, theta_j in enumerate(probabilities):
+            print(f"Probabilità che x{i+1} ({x_i}) appartenga a classe {j+1} = {theta_j:.4f}")
+
+# # Esempio di utilizzo
+# x = np.array([[0.8, -1], [0.2, 1]]) #vettore x che contiene le osservazioni
+# w = np.array([[-1, 1], [1, 1], [-1, -1]]) #un peso per ciascuna classe
+
+# multinomial_regression(x, w)
