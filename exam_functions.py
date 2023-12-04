@@ -498,3 +498,129 @@ def gmm_weighted_density(sigma, dim, vect_mean, weights):
 # dim = 10
 
 # gmm_weighted_density(sigma, dim, vect_dist, weigths)
+
+
+
+def knn_dist_pred_2d(df, class1, class2, K, show=False):
+        """
+        calculates predictions given a matrix with euclidean distances, can only handle two classes: red and black
+        -------------------------------------------------------
+        df = panda dataframe con le distanze tra le osservazioni
+        class1 = list with coloumn numbers of observations in the red class (starts at 1). indicare i numeri delle colonne (index 1) delle osservazioni che appartengono a class1!!
+        class2 = list with coloumn numbers of observations in the black class (starts at 1)
+        """
+        classes = {"red": class1, "black": class2}
+        # Get indexes of of red/black observations
+        red_ind = [i - 1 for i in classes["red"]]
+        black_ind = [i - 1 for i in classes["black"]]
+        pred_label = []
+        O = [i for i in range(1, df.shape[1] + 1)]
+        for row in range(df.shape[0]):
+            dist = df.loc[row, :].values
+            # sort
+            dist_sort = np.argsort(dist)
+            k_nearest_ind = dist_sort[1 : K + 1]
+            pred_red = 0
+            pred_black = 0
+            for i in range(K):
+                if k_nearest_ind[i] in red_ind:
+                    pred_red += 1
+                elif k_nearest_ind[i] in black_ind:
+                    pred_black += 1
+            if pred_red > pred_black:
+                pred_label.append("red")
+            elif pred_black > pred_red:
+                pred_label.append("black")
+            elif pred_black == pred_red:
+                if k_nearest_ind[0] in red_ind:
+                    pred_label.append("red")
+                else:
+                    pred_label.append("black")
+        true_label = []
+        for obs in O:
+            if obs - 1 in red_ind:
+                true_label.append("red")
+            elif obs - 1 in black_ind:
+                true_label.append("black")
+        predictions = pd.DataFrame(
+            {"Obs": O, "True_label": true_label, "Predicted_label": pred_label}
+        )
+        if show:
+            print("-" * 100)
+            print("The predictions when using the {} nearest neighbors are: ".format(K))
+            print(predictions)
+        return predictions
+#example
+# b=[[0,58.5,51.6,18.1,38.0,52.5,71.7,50.7],
+# [58.5,0,32.1,72.6,50.5,65.0,13.2,63.8],
+# [51.6,32.1,0,60.5,28.4,32.9,45.3,56.3],
+# [18.1,72.6,60.5,0,45.9,60.4,79.8,56.8],
+# [38.0,50.5,28.4,45.9,0,17.5,63.7,50.7],
+# [52.5,65.0,32.9,60.4,17.5,0,78.2,57.2],
+# [71.7,13.2,45.3,79.8,63.7,78.2,0,71.0],
+# [50.7,63.8,56.3,56.8,50.7,57.2,71.0,0]]
+# df = pd.DataFrame(b)
+# class1 = [1,2,3,4]
+# class2 = [5,6,7,8]
+# knn_dist_pred_2d(df, class1, class2, 3, show=True)
+
+
+def knn_dist_pred_3d(self, df, class1, class2, class3, K, show=False):
+    """
+    calculates predictions given a matrix with euclidean distances, can handle tree classes: red, black, blue
+    -------------------------------------------------------
+    class1 = list with coloumn numbers of observations in the red class (starts at 1)
+    class2 = list with coloumn numbers of observations in the black class (starts at 1)
+    class3 = list with coloumn numbers of observations in the blue class (starts at 1)
+    """
+    classes = {"red": class1, "black": class2,"blue": class3}
+    # Get indexes of of red/black observations
+    red_ind = [i - 1 for i in classes["red"]]
+    black_ind = [i - 1 for i in classes["black"]]
+    blue_ind = [i - 1 for i in classes["blue"]]
+    pred_label = []
+    O = [i for i in range(1, df.shape[1] + 1)]
+    for row in range(df.shape[0]):
+        dist = df.loc[row, :].values
+        # sort
+        dist_sort = np.argsort(dist)
+        k_nearest_ind = dist_sort[1 : K + 1]
+        pred_red = 0
+        pred_black = 0
+        pred_blue = 0
+        for i in range(K):
+            if k_nearest_ind[i] in red_ind:
+                pred_red += 1
+            elif k_nearest_ind[i] in black_ind:
+                pred_black += 1
+            elif k_nearest_ind[i] in blue_ind:
+                pred_blue += 1
+        if pred_red > pred_black and pred_red > pred_blue:
+            pred_label.append("red")
+        elif pred_black > pred_red and pred_black > pred_blue:
+            pred_label.append("black")
+        elif pred_blue > pred_red and pred_blue > pred_black:
+            pred_label.append("blue")
+        elif pred_black == pred_red == pred_blue:
+            if k_nearest_ind[0] in red_ind:
+                pred_label.append("red")
+            elif k_nearest_ind[0] in black_ind:
+                pred_label.append("black")
+            else:
+                pred_label.append("blue")
+    true_label = []
+    for obs in O:
+        if obs - 1 in red_ind:
+            true_label.append("red")
+        elif obs - 1 in black_ind:
+            true_label.append("black")
+        elif obs - 1 in blue_ind:
+            true_label.append("blue")
+    predictions = pd.DataFrame(
+        {"Obs": O, "True_label": true_label, "Predicted_label": pred_label}
+    )
+    if show:
+        print("-" * 100)
+        print("The predictions when using the {} nearest neighbors are: ".format(K))
+        print(predictions)
+    return predictions
