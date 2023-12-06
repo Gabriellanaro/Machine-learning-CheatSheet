@@ -436,7 +436,7 @@ def apriori_algorithm(df, support_min):
 #l'output è del tipo: ['L: ', 1, {0}, {1}, {2}, {3}, {4}, {6}, {7}, {9}, {10}, {11}, 'L: ', 2, {2, 4}, {4, 6}, {9, 7}, {9, 11}, 'L: ', 3, 'L: ', 4, 'L: ', 5 etc etc
 # L:1 significa itemset con una sola feature, L:2 istemset con due features etc etc
 
-def var_explained(S, plot=True, show_df=True):
+def cum_var_explained(S, plot=True, show_df=True):
     """
     S = list of variances of components (can be read from the S/Sigma matrix)
     plot = to plot or not
@@ -444,13 +444,13 @@ def var_explained(S, plot=True, show_df=True):
     """
     S = np.array(S)
 
-    # df with variance explained
+    # df with cumulative variance explained
     df_var_exp = pd.DataFrame(columns=["k", "var_explained"])
     for i in range(len(S)):
         t = np.sum(S[0 : i + 1] ** 2) / np.sum(S ** 2)
         df_var_exp.loc[i] = [i + 1, t]
     if plot:
-        # plot of variance explained
+        # plot of cumulative variance explained
         plt.plot(df_var_exp["k"], df_var_exp["var_explained"])
         plt.scatter(df_var_exp["k"], df_var_exp["var_explained"])
         plt.title("Variance explained")
@@ -651,3 +651,56 @@ def multinomial_regression(x, w):
 # w = np.array([[-1, 1], [1, 1], [-1, -1]]) #un peso per ciascuna classe
 
 # multinomial_regression(x, w)
+
+
+def naive_bayes(y, df, cols, col_vals, pred_class):
+        """
+        probability of a naive bayes classifier, with more than 2 classes
+        -------------------------------------
+        parameters:
+        ----------
+        y = list of observation class labels (starting at 0)
+        df = data frame with binary data
+        cols = columns to condition the probability on (starts at 0)
+        col_vals = the values the columns are condtioned on
+        pred_class = the class you would like to predict the probability of (starts at 0) <- remember this if y starts on 1
+        """
+        y = np.array(y)
+
+        probs = []
+        for c in range(len(np.unique(y))):
+            n = np.mean(y == c)
+            suby = df.iloc[y == c, :]
+            for i in range(len(cols)):
+                p = np.mean(suby.loc[:, cols[i]] == col_vals[i])
+                n *= p
+            probs.append(n)
+
+        prob = probs[pred_class] / np.sum(probs)
+
+        print(
+            "The probability that the given class is predicted by the Naïve Bayes classifier is {}".format(
+                prob
+            )
+        )
+        return None
+
+
+# a = np.array([[1,1,1,0,0],
+# [1,1,1,0,0],
+# [1,1,1,0,0],
+# [1,1,1,0,0],
+# [1,1,1,0,0],
+# [0,1,1,0,0],
+# [0,1,0,1,1],
+# [1,1,1,0,0],
+# [1,0,1,0,0],
+# [0,0,0,1,1],
+# [0,1,0,1,1]])
+
+# cols = [1,2]
+# y = [0,0,0,0,0,0,0,0,1,1,1]
+# col_vals = [1,0]
+# pred_class = 1
+# df = pd.DataFrame(a)
+# naive_bayes(y, df, cols, col_vals, pred_class)
