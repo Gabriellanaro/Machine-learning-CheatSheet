@@ -229,7 +229,7 @@ def clustering_metrics(cluster1, cluster2):
 
     return {
         "Rand Index - SMC": rand_index,
-        "JACCARD distnace": jaccard, #NON FUNZIONA
+        "JACCARD distnace NON FUNZIONA": jaccard, #NON FUNZIONA
         "COSINE distance ": cosine
     }
     
