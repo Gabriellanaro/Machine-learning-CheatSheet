@@ -844,7 +844,8 @@ class cluster:
                     # different class, same cluster
 
         rand = np.float(f00 + f11) / (f00 + f01 + f10 + f11)
-        jaccard = np.float(f11) / (f01 + f10 + f11)
+        #jaccard = np.float(f11) / (f01 + f10 + f11)
+        jaccard = np.float(f11) / N*(N-1)/(2-f00)
 
         similarities = [rand, jaccard]
         names = ["Rand", "Jaccard"]

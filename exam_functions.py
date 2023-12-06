@@ -50,7 +50,7 @@ def impurity_gain(root_classes, child_classes, impurity_mode='gini'):
 
 
 # # Esempio di utilizzo
-# root_classes = np.array([18, 18, 18])  # Esempio con due classi
+# root_classes = np.array([18, 18, 18])  # Esempio con tre classi
 # child1_classes = np.array([6, 9,3])
 # child2_classes = np.array([4,6,10])
 # child3_classes = np.array([8,3,5])
@@ -229,7 +229,7 @@ def clustering_metrics(cluster1, cluster2):
 
     return {
         "Rand Index - SMC": rand_index,
-        "JACCARD distnace": jaccard,
+        "JACCARD distnace": jaccard, #NON FUNZIONA
         "COSINE distance ": cosine
     }
     
@@ -345,54 +345,54 @@ def empirical_correlation_from_covariance(cov_matrix):
         return p
 
 
-
 def rule_stats(df, X, Y, index=0):
-        """
-        calculates support and confidence of an association rule
-        ----------------------
-        parameters:
-        -----------
-        df = binary dataframe with rows as transactions and colums representing the attributes
-        X = list with the X itemsets
-        Y = list with the Y itemsets
-        """
-        X = np.array(X) - index
-        Y = np.array(Y) - index
+    """
+    calculates support and confidence of an association rule
+    ----------------------
+    parameters:
+    -----------
+    df = binary dataframe with rows as transactions and columns representing the attributes
+    X = list with the X itemsets
+    Y = list with the Y itemsets
+    """
+    X = np.array(X) - index
+    Y = np.array(Y) - index
 
-        X_item = df.loc[:, X]
-        Y_item = df.loc[:, Y]
-        items = pd.concat([X_item, Y_item], axis=1)
+    X_item = df.iloc[:, X.flatten()]  # Use flatten to ensure 1-dimensional indexing
+    Y_item = df.iloc[:, Y.flatten()]
+    items = pd.concat([X_item, Y_item], axis=1)
 
-        support = np.mean(np.mean(items, axis=1) == 1)
-        confidence = np.sum(np.mean(items, axis=1) == 1) / np.sum(
-            np.mean(X_item, axis=1) == 1
-        )
+    support = np.mean(np.mean(items, axis=1) == 1)
+    confidence = np.sum(np.mean(items, axis=1) == 1) / np.sum(
+        np.mean(X_item, axis=1) == 1
+    )
 
-        the_rule = "{{{}}} ---> {{{}}}".format(X, Y)
+    the_rule = "{{{}}} ---> {{{}}}".format(X, Y)
 
-        print("The rule is {}".format(the_rule))
-        print("The support for the rule is {}".format(support))
-        print("The confidence for the rule is {}".format(confidence))
+    print("The rule is {}".format(the_rule))
+    print("The support for the rule is {}".format(support))
+    print("The confidence for the rule is {}".format(confidence))
 
-##example:
-# a = association_mining()
-# data=[[1,0,1,0,1,0,1,0,1,0,1,0],
-# [0,1,0,1,0,1,0,1,0,1,0,1],
-# [1,0,0,1,1,0,1,0,1,0,1,0],
-# [1,0,1,0,1,0,0,1,0,1,1,0],
-# [0,1,1,0,1,0,1,0,1,0,1,0],
-# [0,1,0,1,0,1,0,1,0,1,0,1],
-# [0,1,1,0,1,0,0,1,0,1,0,1],
-# [1,0,1,0,1,0,1,0,0,1,0,1],
-# [0,1,0,1,1,0,1,0,0,1,0,1],
-# [1,0,0,1,0,1,0,1,0,1,1,0]]
+# example
+# data = [[1, 1, 1, 0, 0],
+#         [1, 1, 1, 0, 0],
+#         [1, 1, 1, 0, 0],
+#         [1, 1, 1, 0, 0],
+#         [1, 1, 1, 0, 0],
+#         [0, 1, 1, 0, 0],
+#         [0, 1, 0, 1, 1],
+#         [1, 1, 1, 0, 0],
+#         [1, 0, 1, 0, 0],
+#         [0, 0, 0, 1, 1],
+#         [0, 1, 0, 1, 1]]
 
-# df= pd.DataFrame(data)
-# x=[3,5,7,9]
-# #x=pd.DataFrame(x)
-# y=[11]
-# #y=pd.DataFrame(y)
-# a.rule_stats(df,x,y)
+# df = pd.DataFrame(data)
+# x = [0,1]
+# X = pd.DataFrame(x)
+# y = [2]
+# Y = pd.DataFrame(y)
+
+# rule_stats(df, X, Y)
 
 
 
