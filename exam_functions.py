@@ -229,11 +229,36 @@ def clustering_metrics(cluster1, cluster2):
 
     return {
         "Rand Index - SMC": rand_index,
-        "JACCARD distnace NON FUNZIONA": jaccard, #NON FUNZIONA
+        "JACCARD distnace NON FUNZIONA usare funzione jaccard_clusters(Z,Q)!": jaccard, #NON FUNZIONA
         "COSINE distance ": cosine
     }
     
+
+def jaccard_clusters(Z, Q):
+    N = len(Z)
     
+    # Inizializza le variabili per il conteggio di coppie nello stesso cluster (S) e coppie in cluster diversi (D)
+    S = 0
+    D = 0
+
+    # Calcola il numero di coppie in S e D
+    for i in range(N):
+        for j in range(i + 1, N):
+            if Z[i] == Z[j] and Q[i] == Q[j]:
+                S += 1
+            elif Z[i] != Z[j] and Q[i] != Q[j]:
+                D += 1
+
+    # Calcola J(Z, Q)
+    denominator = 0.5 * N * (N - 1)
+    J_ZQ = S / (denominator - D)
+
+    return J_ZQ
+
+# C1 = [1,1,3,1,1,1,1,3,3,2]
+# C2 = [1,1,2,2,2,3,3,3,3,3]
+# jaccard_clusters(C1, C2)
+
 
 
 def ARD(df, obs, K):
@@ -565,7 +590,7 @@ def knn_dist_pred_2d(df, class1, class2, K, show=False):
 # knn_dist_pred_2d(df, class1, class2, 3, show=True)
 
 
-def knn_dist_pred_3d(self, df, class1, class2, class3, K, show=False):
+def knn_dist_pred_3d(df, class1, class2, class3, K, show=False):
     """
     calculates predictions given a matrix with euclidean distances, can handle tree classes: red, black, blue
     -------------------------------------------------------
