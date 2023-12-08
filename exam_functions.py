@@ -279,7 +279,7 @@ def jaccard_clusters(Z, Q): #use it only for clusters
 # C2 = [1,1,2,2,2,3,3,3,3,3]
 # jaccard_clusters(C1, C2)
 
-def rand_index_clusters(Z, Q): #use it only for clusters
+def rand_index_clusters(Z, Q): #use it only for clusters. NB: Rand index = SMC
     N = len(Z)
     
     # Inizializza le variabili per il conteggio di coppie nello stesso cluster (S) e coppie in cluster diversi (D)
