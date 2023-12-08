@@ -601,6 +601,52 @@ def gmm_weighted_density(sigma, dim, vect_mean, weights):
 
 
 
+def prob_gmm(x, weights, means, standard_dev, target_class="all"):
+        """Return the mixture prob that x belongs to a class
+        A normal distribution is assumed
+        Input:
+            x: the variable of interest in prob calculations
+            weights: a list of weights for all classes
+            means: a list of means of the normal distribution for all classes
+            standard_dev: a list of standard deviaitons (sigma) (NOT VARIANCES) for all classes
+            target_class: desired class to calc the prob for. ZERO INDEX (y=0, or 1, 2 etc)
+                        By default, keyword "all" calculates for every class (recommended)
+        Example:
+        x = 3.19
+        weights = [0.19, 0.34, 0.48]
+        means = [3.177, 3.181, 3.184]
+        standard_dev = [0.0062, 0.0076, 0.0075]
+        gm = gmm()
+        gm.prob_gmm(x,weights,means,standard_dev,"all") #zero index for target class, we want 2 so y=1
+
+        """
+        
+        #Error checking for bad user input:
+        assert len(weights)==len(means)==len(standard_dev),\
+        "The weights, means and std lists must have the same number of items. Check your lists."
+        if type(target_class) == int:
+            assert target_class < len(means), "Target Class is out of range. Make sure you are starting from 0"
+        
+        y = target_class
+        res = []
+        for (w,u,s) in zip(weights, means, standard_dev):
+            p_i = w*st.norm.pdf(x=x,loc=u,scale=s)
+            res.append(p_i)
+        if y == "all":
+            for i in range(len(res)):
+                print(f"The prob that x={x} belongs to class {i} (0 index) is {res[i]/sum(res)}")
+        else:
+            print(f"The prob that x={x} belongs to class {y} (0 index) is {res[y]/sum(res)}")
+
+#example
+# x = 3.19
+# weights = [0.19, 0.34, 0.48]
+# means = [3.177, 3.181, 3.184]
+# standard_dev = [0.0062, 0.0076, 0.0075]
+# prob_gmm(x,weights,means,standard_dev,"all") #zero index for target class, we want 2 so y=1
+
+
+
 def knn_dist_pred_2d(df, class1, class2, K, show=False):
         """
         calculates predictions given a matrix with euclidean distances, can only handle two classes: red and black
