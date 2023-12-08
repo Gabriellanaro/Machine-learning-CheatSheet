@@ -437,6 +437,8 @@ def empirical_correlation_from_covariance(cov_matrix):
         cov_matrix : 2d array of covariance matrix, eg: [[0.2639, 0.0803], [0.0803, 0.0615]]
         Calculates the correlation between the two x's in the covariance matrix
         The correlation coefficient is defined as: p=cov(x,y)/(sigma_x*sigma_y)
+        nb: se l'esercizio chiede la correlazione tra x1 e x2 efornisce una matrice n x n, 
+        bisogna creare una matrice 2x2 del tipo = [[covarianza x1-x1, covarianza x1-x2],[covarianza x1-x2 , covarianza x2-x2]
         """
         cov = np.array(cov_matrix)
         p = cov[1][0]/math.sqrt((cov[0][0]*cov[1][1]))
