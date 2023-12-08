@@ -25,51 +25,67 @@ from exam_toolbox import *
 # SUPPORT: the support of an itemset is the number of rows containing all items in the itemset divided by the total number of rows.
 # JACCARD: n11/(N-n00)     n11=coordinates where both vectors are non-zero
 
-# decision tree impurity gini entropy 
-def impurity(classes, impurity_mode='gini'):
-    total_elements = np.sum(classes)
-    if total_elements == 0:
-        return 0.0  # Nodo vuoto, impurità zero
+# decision (classification) tree 
+def entropy(v):
+    v = np.array(v)
+    l2 = [math.log2(v[i] / sum(v)) for i in range(len(v))]
+    l2 = np.array(l2)
 
-    probabilities = classes / total_elements
+    return 1 - np.sum(((v / sum(v)) * l2))
 
-    if impurity_mode == 'gini':
-        impurity_value = 1.0 - np.sum(probabilities ** 2)
-    elif impurity_mode == 'entropy':
-        impurity_value = -np.sum(probabilities * np.log2(probabilities + 1e-10))
-    elif impurity_mode == 'class_error':
-        impurity_value = 1.0 - np.max(probabilities)
+def impurity(class_counts, mode='gini'):
+    total_elements = np.sum(class_counts)
+    probabilities = class_counts / total_elements
+
+    if mode == 'gini':
+        impurity_value = 1 - np.sum(probabilities**2)
+    elif mode == 'class_error':
+        impurity_value = 1 - np.max(probabilities)
+    elif mode == 'entropy':
+        impurity_value = -np.sum(probabilities * np.log2(probabilities))
     else:
-        raise ValueError("Invalid impurity_mode. Choose from 'gini', 'entropy', or 'class_error'.")
+        raise ValueError("Invalid impurity mode. Use 'gini', 'class_error', or 'entropy'.")
 
     return impurity_value
 
-def purity_gain(root_classes, child_classes, impurity_mode='gini'):
-    root_impurity = impurity(root_classes, impurity_mode)
-    total_root_elements = np.sum(root_classes)
+def purity_gain(root, children, purity_measure, accuracy=False):
+    """
+    root = list with the size of each class
+    children = list of arrays, each array representing the size of each class in a branch after the split
+    purity_measure = string with the purity measure to use
+    """
+    root = np.array(root)
+    children = [np.array(child) for child in children]
 
-    print("Root Impurity:", root_impurity)
+    v = np.array(children)
 
-    child_impurity = 0.0
-    for i, child_class in enumerate(child_classes):
-        total_child_elements = np.sum(child_class)
-        child_impurity_i = (total_child_elements / total_root_elements) * impurity(child_class, impurity_mode)
-        child_impurity += child_impurity_i
-        print(f"Child {i + 1} Impurity:", child_impurity_i)
+    acc = np.sum(np.max(children, axis=1)) / np.sum(v)
+    if accuracy:
+        print("The accuracy of the split is {}".format(acc))
 
-    gain = root_impurity - child_impurity
-    return gain
+    Iv = 0
+
+    print("Root Impurity:", impurity(root, purity_measure))
+
+    for i in range(len(children)):
+        child_impurity = impurity(children[i], purity_measure)
+        Iv += child_impurity * sum(children[i]) / sum(root)
+        print(f"Child {i + 1} Impurity:", child_impurity)
+
+    purity = impurity(root, purity_measure) - Iv
+
+    print("The purity gain for the split is {} with the purity measure {}".format(purity, purity_measure))
+    return purity
+
+# Esempio di utilizzo
+# root_classes = np.array([2, 5, 4])
+# child1_classes = np.array([2, 4, 0])
+# child2_classes = np.array([0, 1, 4])
+
+# gain = purity_gain(root_classes, [child1_classes, child2_classes], "gini") #accetta qualsiasi numero di child_classes
 
 
-# # Esempio di utilizzo
-# root_classes = np.array([18, 18, 18])  # Esempio con tre classi
-# child1_classes = np.array([6, 9,3])
-# child2_classes = np.array([4,6,10])
-# child3_classes = np.array([8,3,5])
-# #child4_classes = np.array([8,3,2])
 
-# gain = impurity_gain(root_classes, [child1_classes, child2_classes, child3_classes], impurity_mode = "entropy")
-# print("Purity Gain:", gain)
 
 def calculate_rss(values):
     return np.sum((values - np.mean(values)) ** 2)
