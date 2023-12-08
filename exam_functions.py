@@ -252,9 +252,46 @@ def draw_dendrogram(x, method='single', metric='euclidean'):
 
 # print(draw_dendrogram(a2, method='average'))
 
+
+
+def clustering_metrics(cluster1, cluster2):
+    if len(cluster1) != len(cluster2):
+        raise ValueError("I due vettori devono avere la stessa lunghezza.")
+
+    n = len(cluster1)
+    agree = 0
+    total_pairs = 0
+
+    for pair in combinations(range(n), 2):
+        a, b = pair
+        a_same_cluster = (cluster1[a] == cluster1[b])
+        b_same_cluster = (cluster2[a] == cluster2[b])
+
+        if a_same_cluster == b_same_cluster:
+            agree += 1
+
+        total_pairs += 1
+
+    rand_index = agree / total_pairs
+
+    set_cluster1 = set(cluster1)
+    set_cluster2 = set(cluster2)
+    intersection = len(set_cluster1.intersection(set_cluster2))
+    union = len(set_cluster1.union(set_cluster2))
+    jaccard = 1 - (intersection / union)
+
+    cluster1 = np.array(cluster1)
+    cluster2 = np.array(cluster2)
+    cosine = 1 - (np.dot(cluster1, cluster2) / (np.linalg.norm(cluster1) * np.linalg.norm(cluster2)))
+
+    return {
+        "Rand Index - SMC": rand_index,
+        "JACCARD distnace NON FUNZIONA usare funzione jaccard_clusters(Z,Q)!": jaccard, #NON FUNZIONA
+        "COSINE distance ": cosine
+    }
     
 
-def jaccard_clusters(Z, Q): #use it only for clusters
+def jaccard_clusters(Z, Q):
     N = len(Z)
     
     # Inizializza le variabili per il conteggio di coppie nello stesso cluster (S) e coppie in cluster diversi (D)
@@ -279,61 +316,6 @@ def jaccard_clusters(Z, Q): #use it only for clusters
 # C2 = [1,1,2,2,2,3,3,3,3,3]
 # jaccard_clusters(C1, C2)
 
-def rand_index_clusters(Z, Q): #use it only for clusters. NB: Rand index = SMC
-    N = len(Z)
-    
-    # Inizializza le variabili per il conteggio di coppie nello stesso cluster (S) e coppie in cluster diversi (D)
-    S = 0
-    D = 0
-
-    # Calcola il numero di coppie in S e D
-    for i in range(N):
-        for j in range(i + 1, N):
-            if Z[i] == Z[j] and Q[i] == Q[j]:
-                S += 1
-            elif Z[i] != Z[j] and Q[i] != Q[j]:
-                D += 1
-
-    # Calcola R(Z, Q)
-    numerator = S + D
-    denominator = 0.5 * N * (N - 1)
-    R_ZQ = numerator / denominator
-
-    return R_ZQ
-
-# # Esempio di utilizzo con i tuoi dati
-# Z = [1, 2, 2, 3]
-# Q = [1, 3, 3, 2]
-
-# result = calculate_R(Z, Q)
-# print("R(Z, Q):", result)
-
-
-
-def similarity_metrics(x, y): #use this only for vectors related exercises, not clusters!
-    K = len(x)
-    f00 = np.sum((x == 0) & (y == 0))
-    f11 = np.sum((x == 1) & (y == 1))
-
-    smc = (f00 + f11) / K
-    jaccard = f11 / (K - f00)
-    
-    dot_product = np.dot(x, y)
-    norm_x_squared = np.dot(x, x)
-    norm_y_squared = np.dot(y, y)
-    extended_jaccard = dot_product / (norm_x_squared + norm_y_squared - dot_product)
-    
-    cosine_similarity = dot_product / (np.linalg.norm(x) * np.linalg.norm(y))
-
-    # Stampa i risultati
-    print("Simple Matching Coefficient (SMC):", smc)
-    print("Jaccard Coefficient (J):", jaccard)
-    print("Extended Jaccard Coefficient (EJ):", extended_jaccard)
-    print("Cosine Similarity:", cosine_similarity)
-
-# x = np.array([0,0,0,1,0,0,0,0,0])
-# y= np.array([0,1,1,1,1,1,0,0,0])
-# similarity_metrics(x, y)
 
 
 def ARD(df, obs, K):
