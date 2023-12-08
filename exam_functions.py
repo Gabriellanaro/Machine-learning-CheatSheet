@@ -1,3 +1,11 @@
+"""
+Functions created to use for the exam in the course 02450 Introduction to machine learning at the Technical University of Denmark
+
+Author: Gabriele Turetta / Gabriel Lanaro
+"""
+__version__ = "Revision: 2023-12-14"
+
+
 import numpy as np
 from fractions import Fraction
 from matplotlib.pyplot import figure, show
@@ -12,6 +20,10 @@ import sklearn.metrics.cluster as cluster_metrics
 import math
 from exam_toolbox import *
 
+
+##THEORY FOR EXERCISES
+# SUPPORT: the support of an itemset is the number of rows containing all items in the itemset divided by the total number of rows.
+# JACCARD: n11/(N-n00)     n11=coordinates where both vectors are non-zero
 
 # decision tree impurity gini entropy 
 def impurity(classes, impurity_mode='gini'):
@@ -32,7 +44,7 @@ def impurity(classes, impurity_mode='gini'):
 
     return impurity_value
 
-def impurity_gain(root_classes, child_classes, impurity_mode='gini'):
+def purity_gain(root_classes, child_classes, impurity_mode='gini'):
     root_impurity = impurity(root_classes, impurity_mode)
     total_root_elements = np.sum(root_classes)
 
@@ -58,6 +70,51 @@ def impurity_gain(root_classes, child_classes, impurity_mode='gini'):
 
 # gain = impurity_gain(root_classes, [child1_classes, child2_classes, child3_classes], impurity_mode = "entropy")
 # print("Purity Gain:", gain)
+
+def calculate_rss(values):
+    return np.sum((values - np.mean(values)) ** 2)
+
+## TO USE FOR REGRESSION TREES
+def purity_gain_rss(parent_values, left_child_values, right_child_values):
+    """
+    Calculates the purity gain using RSS (Residual Sum of Squares) for a given split.
+
+    Parameters:
+    - parent_values (numpy.ndarray): Values of the parent node before the split.
+    - left_child_values (numpy.ndarray): Values of the left child node after the split.
+    - right_child_values (numpy.ndarray): Values of the right child node after the split.
+
+    Returns:
+    - float: Purity gain using RSS.
+    """
+
+    rss_parent = calculate_rss(parent_values)
+    rss_left_child = calculate_rss(left_child_values)
+    rss_right_child = calculate_rss(right_child_values)
+
+    total_instances = len(parent_values)
+    total_instances_left = len(left_child_values)
+    total_instances_right = len(right_child_values)
+
+    # Calculate the purity gain using RSS
+    purity_gain = rss_parent - (
+        (total_instances_left / total_instances) * rss_left_child
+        + (total_instances_right / total_instances) * rss_right_child
+    )
+
+    return purity_gain
+
+# # EXAMPLE OF USAGE
+# parent_values = np.array([-1.76, 0, 0.06, 0.08, 0.65, 1.3])  # Values of the parent node
+# left_child_values = np.array(
+#     [-1.76, 0, 0.06, 0.08]
+# )  # Values of the left child node after the split
+# right_child_values = np.array(
+#     [0.65, 1.3]
+# )  # Values of the right child node after the split
+
+# purity_gain = purity_gain_rss(parent_values, left_child_values, right_child_values)
+# print(f"Purity Gain using RSS: {purity_gain}")
 
 
 def kmeans2_main(data, centroids):
@@ -395,8 +452,8 @@ def rule_stats(df, X, Y, index=0):
     parameters:
     -----------
     df = binary dataframe with rows as transactions and columns representing the attributes
-    X = list with the X itemsets
-    Y = list with the Y itemsets
+    X = list with the X itemsets (0-index)
+    Y = list with the Y itemsets (0-index)
     """
     X = np.array(X) - index
     Y = np.array(Y) - index
@@ -410,7 +467,7 @@ def rule_stats(df, X, Y, index=0):
         np.mean(X_item, axis=1) == 1
     )
 
-    the_rule = "{{{}}} ---> {{{}}}".format(X, Y)
+    the_rule = "{{{}}} ---> {{{}}}".format(X+1, Y+1)
 
     print("The rule is {}".format(the_rule))
     print("The support for the rule is {}".format(support))
