@@ -1,5 +1,6 @@
 import numpy as np
 import re
+import pandas as pd
 
 # define variable a with numbers in the range from 0 to 7 (not inclusive)
 a = np.arange(start=0, stop=7)
