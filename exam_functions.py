@@ -24,6 +24,7 @@ from exam_toolbox import *
 ##THEORY FOR EXERCISES
 # SUPPORT: the support of an itemset is the number of rows containing all items in the itemset divided by the total number of rows.
 # JACCARD: n11/(N-n00)     n11=coordinates where both vectors are non-zero
+# 
 
 # decision (classification) tree 
 def entropy(v):
@@ -898,3 +899,28 @@ def distance_between_clusters(self,dist_matrix,cluster1,cluster2):
 # [850,125,51,700,150,1375,1450,350,450,0]]
 
 # distance_between_clusters(data, [5,6], [7,8,9])
+
+
+# # MAHALONOBIS DISTANCE
+# # Define the two points as arrays
+# point1 = np.array([1, 2, 3])
+# point2 = np.array([4, 5, 6])
+# # Define the covariance matrix
+# covariance = np.array([[1, 0, 0],
+#                        [0, 1, 0],
+#                        [0, 0, 1]])
+# # Compute the Mahalanobis distance
+# mahalanobis_distance = distance.mahalanobis(point1, point2, np.linalg.inv(covariance))
+# print("Mahalanobis distance:", mahalanobis_distance)
+
+
+# # EUCLIDEAN DISTANCE
+# point1 = np.array((1, 2, 3))
+# point2 = np.array((1, 1, 1))
+ 
+# # calculating Euclidean distance
+# # using linalg.norm()
+# dist = np.linalg.norm(point1 - point2)
+ 
+# # printing Euclidean distance
+# print(dist)
