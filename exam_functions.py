@@ -898,3 +898,20 @@ def distance_between_clusters(self,dist_matrix,cluster1,cluster2):
 # [850,125,51,700,150,1375,1450,350,450,0]]
 
 # distance_between_clusters(data, [5,6], [7,8,9])
+
+
+
+def mcnemar_test(self,n1,n2):
+        """
+        Prints the p value from the McNemar test between 2 classification models 
+        n1 : the total number of times that Model 1 is correct and Model 2 is incorrect. Remember to sum, if multiple folds
+        n2 : the total number of times that Model 1 is incorrect and Model 2 is correct. Remember to sum, if multiple folds
+        """
+        N = n1+n2
+        m = min(n1,n2)
+        theta = 1/2 #always
+        
+        p_val = 2*st.binom.cdf(m,N,theta)
+        
+        print(f"p-val={p_val:.5f}")
+    
