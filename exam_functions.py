@@ -934,36 +934,36 @@ def multinomial_regression(x, w):
 
 
 def naive_bayes(y, df, cols, col_vals, pred_class):
-        """
-        probability of a naive bayes classifier, with more than 2 classes
-        -------------------------------------
-        parameters:
-        ----------
-        y = list of observation class labels (starting at 0)
-        df = data frame with binary data
-        cols = columns to condition the probability on (starts at 0)
-        col_vals = the values the columns are condtioned on
-        pred_class = the class you would like to predict the probability of (starts at 0) <- remember this if y starts on 1
-        """
-        y = np.array(y)
+    """
+    probability of a naive bayes classifier, with more than 2 classes
+    -------------------------------------
+    parameters:
+    ----------
+    y = list of observation class labels (starting at 0)
+    df = data frame with binary data
+    cols = columns to condition the probability on (starts at 0)
+    col_vals = the values the columns are condtioned on
+    pred_class = the class you would like to predict the probability of (starts at 0) <- remember this if y starts on 1
+    """
+    y = np.array(y)
 
-        probs = []
-        for c in range(len(np.unique(y))):
-            n = np.mean(y == c)
-            suby = df.iloc[y == c, :]
-            for i in range(len(cols)):
-                p = np.mean(suby.loc[:, cols[i]] == col_vals[i])
-                n *= p
-            probs.append(n)
+    probs = []
+    for c in range(len(np.unique(y))):
+        n = np.mean(y == c)
+        suby = df.iloc[y == c, :]
+        for i in range(len(cols)):
+            p = np.mean(suby.loc[:, cols[i]] == col_vals[i])
+            n *= p
+        probs.append(n)
 
-        prob = probs[pred_class] / np.sum(probs)
+    prob = probs[pred_class] / np.sum(probs)
 
-        print(
-            "The probability that the given class is predicted by the Naïve Bayes classifier is {}".format(
-                prob
-            )
+    print(
+        "The probability that the given class is predicted by the Naïve Bayes classifier is {}".format(
+            prob
         )
-        return None
+    )
+    return None
 
 
 # a = np.array([[1,1,1,0,0],
