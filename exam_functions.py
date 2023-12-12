@@ -1084,4 +1084,11 @@ def kde(x_train, x_test, sigma):
 #     p = kde(xtrain, xtest, sigma)
 #     yval.append(-np.log(p))
 
-# plt.plot(xval, yval)
+# plt.figure(figsize=(8, 6))
+# plt.plot(xval, yval, linestyle="-", marker="o", markersize=2)
+# plt.xlabel("Sigma")
+# plt.ylabel("-log(P)")
+# plt.title("Kernel Density Estimation")
+# plt.yscale("log")  # Using logarithmic scale for y-axis
+# plt.grid(True)
+# plt.show()
