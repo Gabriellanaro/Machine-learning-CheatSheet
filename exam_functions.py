@@ -86,11 +86,54 @@ def purity_gain(root, children, purity_measure, accuracy=False): #negli esercizi
 
 # gain = purity_gain(root_classes, [child1_classes, child2_classes], "gini") #accetta qualsiasi numero di child_classes
 
+import numpy as np
 
+def empirical_correlation(covariance_matrix, feature_index_1, feature_index_2):
+    """
+    Compute empirical correlation between two features given a covariance matrix.
+
+    Parameters:
+    -----------
+    covariance_matrix : np.ndarray
+        The covariance matrix containing variances and covariances of features.
+    feature_index_1 : int
+        Index of the first feature. (0-index)
+    feature_index_2 : int
+        Index of the second feature. (0-index)
+
+    Returns:
+    --------
+    correlation : float
+        Empirical correlation between the specified features.
+    """
+    # Calculate variance of the two features
+    var_feature_1 = covariance_matrix[feature_index_1, feature_index_1]
+    var_feature_2 = covariance_matrix[feature_index_2, feature_index_2]
+    
+    # Calculate covariance between the two features
+    cov_features = covariance_matrix[feature_index_1, feature_index_2]
+    
+    # Calculate empirical correlation
+    correlation = cov_features / np.sqrt(var_feature_1 * var_feature_2)
+    
+    return correlation
+
+# emp = np.array(
+#     [
+#         [143.0, 39.0, -0.0, 253.0, 142.0],
+#         [39.0, 415.0, -7.0, -6727.0, 143.0],
+#         [-0.0, -7.0, 1.0, 108.0, -2.0],
+#         [253.0, -6727.0, 108.0, 370027.0, -1403.0],
+#         [142.0, 143.0, -2.0, -1403.0, 171.0],
+#     ]
+# )
+
+# empirical_correlation(emp, 1, 2)
 
 
 def calculate_rss(values):
     return np.sum((values - np.mean(values)) ** 2)
+
 
 ## TO USE FOR REGRESSION TREES
 def purity_gain_rss(parent_values, left_child_values, right_child_values):
@@ -109,27 +152,32 @@ def purity_gain_rss(parent_values, left_child_values, right_child_values):
     rss_parent = calculate_rss(parent_values)
     rss_left_child = calculate_rss(left_child_values)
     rss_right_child = calculate_rss(right_child_values)
-
     total_instances = len(parent_values)
     total_instances_left = len(left_child_values)
     total_instances_right = len(right_child_values)
 
+    i_p = (1 / total_instances) * rss_parent
+    i_l = (1 / total_instances_left) * rss_left_child
+    i_r = (1 / total_instances_right) * rss_right_child
+
+    print(f"Impurity PARENT      : {i_p}")
+    print(f"Impurity LEFT CHILD  : {i_l}")
+    print(f"Impurity RIGHT CHIKD : {i_r}")
+
     # Calculate the purity gain using RSS
-    purity_gain = rss_parent - (
-        (total_instances_left / total_instances) * rss_left_child
-        + (total_instances_right / total_instances) * rss_right_child
+
+    purity_gain = (
+        i_p
+        - (total_instances_left / total_instances) * i_l
+        - (total_instances_right / total_instances) * i_r
     )
 
     return purity_gain
 
 # # EXAMPLE OF USAGE
-# parent_values = np.array([-1.76, 0, 0.06, 0.08, 0.65, 1.3])  # Values of the parent node
-# left_child_values = np.array(
-#     [-1.76, 0, 0.06, 0.08]
-# )  # Values of the left child node after the split
-# right_child_values = np.array(
-#     [0.65, 1.3]
-# )  # Values of the right child node after the split
+# parent_values = [12, 6, 8, 10, 4, 2]  # Values of the parent node
+# left_child_values = [12, 6, 8, 10]  # Values of the left child node after the split
+# right_child_values = [4, 2]  # Values of the right child node after the split
 
 # purity_gain = purity_gain_rss(parent_values, left_child_values, right_child_values)
 # print(f"Purity Gain using RSS: {purity_gain}")
@@ -251,8 +299,32 @@ def confusion_matrix_stats(TN, TP, FN, FP):
 #     print(value)
 
 
+def draw_dendrogram_df(df, method="single", metric="euclidean"):
+    """
+    Draw a dendrogram based on the input DataFrame.
 
-def draw_dendrogram(x, method='single', metric='euclidean'):
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        Input DataFrame containing the data for clustering.
+    method : str, optional
+        Clustering method: 'single', 'complete', 'average', 'centroid', 'median', 'ward', 'weighted'.
+        'single' represents min and 'complete' represents max.
+    metric : str, optional
+        Distance metric to use for clustering.
+
+    Returns:
+    --------
+    None (displays the dendrogram plot)
+    """
+    data = df.to_numpy()  # Convert DataFrame to numpy array
+    z = linkage(squareform(data), method=method, metric=metric, optimal_ordering=True)
+    plt.figure(figsize=(10, 4))
+    dendrogram(z, count_sort="descendent", labels=list(df.index + 1))
+    plt.show()
+    
+
+def draw_dendrogram_string(x, method='single', metric='euclidean'):
     """
     :param x:
     :param method: single complete average centroid median ward weighted
