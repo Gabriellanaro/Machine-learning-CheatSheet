@@ -925,7 +925,8 @@ def distance_between_clusters(self,dist_matrix,cluster1,cluster2):
 # # printing Euclidean distance
 # print(dist)
 
-def mcnemar_test(self,n1,n2):
+
+def mcnemar_test(n1,n2):
         """
         Prints the p value from the McNemar test between 2 classification models 
         n1 : the total number of times that Model 1 is correct and Model 2 is incorrect. Remember to sum, if multiple folds
@@ -938,3 +939,27 @@ def mcnemar_test(self,n1,n2):
         p_val = 2*st.binom.cdf(m,N,theta)
         
         print(f"p-val={p_val:.5f}")
+
+def params_ANN(M, n_h, C):
+
+    """
+    calculates the amount of parameters needed in ANN
+    ----------------------
+    parameters [int]:
+    -----------
+    M = number of features taken into account
+    n_h = units in the layer
+    C = number of classes in the dataset
+    """
+    
+    params_hidden_layer = (M + 1) * n_h
+
+    params_softmax = (n_h + 1) * C
+
+    total = params_hidden_layer + params_softmax
+
+    print("Parameters in hidden layer:", params_hidden_layer)
+    print("Parameters in softmatrix:", params_softmax)
+    print("Total parameters in the neural network:", total)
+    
+    
