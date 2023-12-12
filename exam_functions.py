@@ -961,7 +961,7 @@ def naive_bayes(y, df, cols, col_vals, pred_class):
 # naive_bayes(y, df, cols, col_vals, pred_class)
 
 
-def distance_between_clusters(self,dist_matrix,cluster1,cluster2):
+def distance_between_clusters(dist_matrix,cluster1,cluster2):
         """Returns distance between clusters (avg linkage function)
 
         Args:
@@ -1054,3 +1054,34 @@ def params_ANN(M, n_h, C):
     print("Total parameters in the neural network:", total)
     
     
+def kde(x_train, x_test, sigma):
+    """Compute the kernel density estimation
+    given the vector of training and the test
+    is a value for getting the predicition
+
+    Args:
+        x_train (list): training values
+        x_test (double): test val
+        sigma (double): kernel width
+
+    Returns:
+        double: p
+    """
+    N = len(x_train)
+    p_ = 0
+    for x in x_train:
+        p_ += (1/np.sqrt(2*np.pi*sigma**2)) * np.exp(-(((x_test - x)**2)/(2*sigma**2)))
+    p = (1/N) * p_
+    return p
+
+# # EXAMPLE OF USE
+# yval = []
+# xval = []
+# xtest = 1.2
+# xtrain = [4.5, -0.5]
+# for sigma in np.arange(2, 8, 0.01):
+#     xval.append(sigma)
+#     p = kde(xtrain, xtest, sigma)
+#     yval.append(-np.log(p))
+
+# plt.plot(xval, yval)
