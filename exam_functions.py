@@ -16,6 +16,7 @@ from itertools import combinations
 import pandas as pd
 import matplotlib.pyplot as plt
 import sklearn.metrics as metrics
+from sklearn.cluster import KMeans
 import sklearn.metrics.cluster as cluster_metrics
 import math
 from exam_toolbox import *
@@ -134,27 +135,42 @@ def purity_gain_rss(parent_values, left_child_values, right_child_values):
 # print(f"Purity Gain using RSS: {purity_gain}")
 
 
-def kmeans2_main(data, centroids):
-    c1, c2 = centroids
-    dif1, dif2 = data - c1, data - c2
-    cat1, cat2 = [], []
 
-    for i in range(0, len(data)):
-        if abs(dif1[i]) <= abs(dif2[i]):
-            cat1.append(data[i])
-        elif abs(dif2[i]) <= abs(dif1[i]):
-            cat2.append(data[i])
-        else:
-            print("ERROR")
+def kmeans_1d(x, k, init=None):
+    """
+    assigns cluster to values in a 1d array
+    -----------------------------------------
+    parameters:
+    -----------
+    x = list of values to cluster
+    k = number of clusters
+    init = values to initialize clusters at
+    """
+    x = np.array(x).reshape(-1, 1)
+    if init == None:
+        kmeans = KMeans(n_clusters=k).fit(x)
+    else:
+        init = np.array(init).reshape(-1, 1)
+        kmeans = KMeans(n_clusters=k, init=init).fit(x)
 
-    # Print clusterings
-    print(cat1, cat2)
+    clusters = kmeans.predict(x)
 
-    # Return new centroids
-    return np.array([np.mean(cat1), np.mean(cat2)])
+    centers = []
+
+    for c in np.unique(clusters):
+        centers.append(np.mean(x[clusters == c]))
+
+    centers = np.round(centers, 4)
+    print("The assigned clusters are: {}".format(clusters))
+    print(
+        "The cluster centers of the converged k-means algortihm is: {}".format(
+            centers
+        )
+    )
+    return None
 
 
-def adaboost(delta, rounds):
+def adaboost(delta, rounds, weigths = None):
     """
     delta : list of misclassified observations, 
     0 = correctly classified, 1 = misclassified
@@ -175,8 +191,9 @@ def adaboost(delta, rounds):
     # Initial weights
     delta = np.array(delta)
     n = len(delta)
-    weights = np.ones(n) / n
-
+    if weights ==None:
+        weights = np.ones(n) / n
+        
     # Run all rounds
     for i in range(rounds):
         eps = np.mean(delta == 1)
@@ -321,7 +338,7 @@ def rand_index_clusters(Z, Q): #use it only for clusters. NB: Rand index = SMC
 # Z = [1, 2, 2, 3]
 # Q = [1, 3, 3, 2]
 
-# result = calculate_R(Z, Q)
+# result = rand_index_clusters(Z, Q)
 # print("R(Z, Q):", result)
 
 
@@ -575,6 +592,8 @@ def cum_var_explained(S, plot=True, show_df=True):
         plt.xlim(np.min(df_var_exp["k"]), np.max(df_var_exp["k"]))
         plt.ylim(0, 1)
         plt.show()
+        
+
 
     if show_df:
         print(df_var_exp)

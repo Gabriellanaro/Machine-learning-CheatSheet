@@ -2,3 +2,4 @@
 prova.ipynb
 __pycache__/
 
+*.pyc
