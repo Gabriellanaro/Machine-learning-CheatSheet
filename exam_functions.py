@@ -218,7 +218,7 @@ def kmeans_1d(x, k, init=None):
     return None
 
 
-def adaboost(delta, rounds, weigths = None):
+def adaboost(delta, rounds, weights = None):
     """
     delta : list of misclassified observations, 
     0 = correctly classified, 1 = misclassified
@@ -239,7 +239,7 @@ def adaboost(delta, rounds, weigths = None):
     # Initial weights
     delta = np.array(delta)
     n = len(delta)
-    if weights ==None:
+    if weights is None:
         weights = np.ones(n) / n
         
     # Run all rounds
