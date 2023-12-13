@@ -1063,6 +1063,34 @@ def mcnemar_test(n1,n2, num_obs = 0):
             print(f"difference in accuracy between M1 and M2={diff_accuracy:.5f}")
         
 
+def jeffery_interval(obs,corr_obs):
+        """
+        Prints the jeffery interval for a model. 
+        obs : number of observations
+        corr_obs : correctly classified observations
+        """
+        n = obs #observations
+        m = corr_obs #correct classified
+        alpha = 0.05 #always = 0.05
+        a = m + 0.5
+        b = n-m + 0.5
+
+        #Confidence Intervals
+        CI_L = st.beta.ppf(alpha/2,a,b)
+        CI_H = st.beta.ppf(1-alpha/2,a,b)
+        theta = a/(a+b)
+
+        #Jeffery Intervals Results
+        print(f"lower limit : cdf_B^-1 ({alpha/2} | a = {a} , b = {b})")
+        print(f"upper limit : cdf_B^-1 ({1-alpha/2} | a = {a} , b = {b})")
+        print(f"a={a}")
+        print(f"b={b}")
+        print(f"CI_L={CI_L}")
+        print(f"CI_H={CI_H}")
+        print(f"Theta={theta}")
+
+
+
 def params_ANN(M, n_h, C):
 
     """
