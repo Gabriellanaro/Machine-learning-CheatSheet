@@ -1042,19 +1042,26 @@ def distance_between_clusters(dist_matrix,cluster1,cluster2):
 # print(dist)
 
 
-def mcnemar_test(n1,n2):
+def mcnemar_test(n1,n2, num_obs = 0):
         """
         Prints the p value from the McNemar test between 2 classification models 
         n1 : the total number of times that Model 1 is correct and Model 2 is incorrect. Remember to sum, if multiple folds
         n2 : the total number of times that Model 1 is incorrect and Model 2 is correct. Remember to sum, if multiple folds
+        N : total number of observations
         """
         N = n1+n2
         m = min(n1,n2)
         theta = 1/2 #always
         
         p_val = 2*st.binom.cdf(m,N,theta)
+
+        if(num_obs == 0):
+            print(f"p-val={p_val:.5f}")
+        else:
+            diff_accuracy = (n1-n2)/num_obs
+            print(f"p-val={p_val:.5f}")
+            print(f"difference in accuracy between M1 and M2={diff_accuracy:.5f}")
         
-        print(f"p-val={p_val:.5f}")
 
 def params_ANN(M, n_h, C):
 
