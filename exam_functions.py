@@ -209,6 +209,7 @@ def kmeans_1d(x, k, init=None):
         centers.append(np.mean(x[clusters == c]))
 
     centers = np.round(centers, 4)
+    print("PROBABLY INCORRECT DO IT BY HAND!")
     print("The assigned clusters are: {}".format(clusters))
     print(
         "The cluster centers of the converged k-means algortihm is: {}".format(
