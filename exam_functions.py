@@ -682,20 +682,26 @@ def cum_var_explained(S, plot=True, show_df=True):
     for i in range(len(S)):
         t = np.sum(S[0 : i + 1] ** 2) / np.sum(S ** 2)
         df_var_exp.loc[i] = [i + 1, t]
+
     if plot:
-        # plot of cumulative variance explained
+        # plot of cumulative variance explained with precise values on each point
         plt.plot(df_var_exp["k"], df_var_exp["var_explained"])
         plt.scatter(df_var_exp["k"], df_var_exp["var_explained"])
         plt.title("Variance explained")
         plt.xlim(np.min(df_var_exp["k"]), np.max(df_var_exp["k"]))
         plt.ylim(0, 1)
-        plt.show()
-        
 
+        # Adding precise values on each point
+        for i, txt in enumerate(df_var_exp["var_explained"]):
+            plt.annotate(f'{txt:.4f}', (df_var_exp["k"][i], df_var_exp["var_explained"][i]), textcoords="offset points", xytext=(0,10), ha='center')
+
+        plt.show()
 
     if show_df:
         print(df_var_exp)
+        
     return df_var_exp
+
 
 
 
@@ -1048,7 +1054,7 @@ def mcnemar_test(n1,n2, num_obs = 0):
         Prints the p value from the McNemar test between 2 classification models 
         n1 : the total number of times that Model 1 is correct and Model 2 is incorrect. Remember to sum, if multiple folds
         n2 : the total number of times that Model 1 is incorrect and Model 2 is correct. Remember to sum, if multiple folds
-        N : total number of observations
+        num_obs : total number of observations
         """
         N = n1+n2
         m = min(n1,n2)
@@ -1061,7 +1067,7 @@ def mcnemar_test(n1,n2, num_obs = 0):
         else:
             diff_accuracy = (n1-n2)/num_obs
             print(f"p-val={p_val:.5f}")
-            print(f"difference in accuracy between M1 and M2={diff_accuracy:.5f}")
+            print(f"difference in accuracy between M1 and M2 = {diff_accuracy:.5f}")
         
 
 def jeffery_interval(obs,corr_obs):
