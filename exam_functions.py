@@ -634,7 +634,7 @@ def apriori_algorithm(df, support_min):
         df: dataframe with each row being a basket, and each column being an item
         support_min: minimum support level
         Remember that the printed itemsets start from 0!
-        return the frequent itemsets, that is to say the itemsets with support>support_min
+        return the frequent itemsets, that is to say the itemsets with support>support_min (0-index)
         """
         itemsets = []
         n = len(df)

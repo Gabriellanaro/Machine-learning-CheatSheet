@@ -1079,7 +1079,7 @@ class association_mining:
                 x = ", ".join(list(o.items_base))
                 y = ", ".join(list(o.items_add))
                 if prints:
-                    print("{%s} -> {%s}  (supp: %.3f, conf: %.3f)" % (x, y, supp, conf))
+                    print("{%s} -> {%s}  (supp: %.3f, conf: %.3f)" % (x+1, y+1, supp, conf))
                 frules.append((x, y))
                 rules_conf_sup[i] = np.array([x, y, supp, conf])
                 i += 1
