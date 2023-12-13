@@ -1159,3 +1159,34 @@ def kde(x_train, x_test, sigma):
 # plt.yscale("log")  # Using logarithmic scale for y-axis
 # plt.grid(True)
 # plt.show()
+
+def softmax1(x):
+    """
+    calcola funzione di attivazione softmax dato in input un'osservazione x di qualsiasi dimensione
+    """
+    exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+    print(exp_x)
+    softmax1 =  exp_x / np.sum(exp_x, axis=-1, keepdims=True) #versione e^xw1/(sommatoria di e^xw)
+    softmax2 = exp_x / (1 + np.sum(exp_x, axis=-1, keepdims=True)) #versione e^xw1/[1 + (sommatoria di e^xw) ]
+    softmax2_1 = 1 / (1 + np.sum(exp_x, axis=-1, keepdims=True)) #versione 1/[1 + (sommatoria di e^xw) ]
+    return [softmax1 , softmax2, softmax2_1]
+
+def multinomial_regression1(x, w):
+    """
+        calcola la probabilità che l'osservazione x appartenga a una classe usando multinomial regression classifier
+        -------------------------------------------------------
+        x = vettore di osservazioni di qualsiasi dimensione
+        w = vettore dei pesi (un peso per ogni classe, i pesi devono avere la stessa dimensione delle osservazioni)
+        """
+    for i, x_i in enumerate(x):
+        probabilities = softmax1(np.dot(x_i, np.transpose(w)))
+        for j, softmax_type in enumerate(probabilities):
+            print(f"softmax type {j+1} :")
+            for k, theta_k in enumerate(softmax_type):
+                print(f"Probabilità che x{i+1} ({x_i}) appartenga a classe {k+1} = {theta_k:.4f}")
+
+# # Esempio di utilizzo
+x = np.array([[1.0, -5.52, -4.69]]) #vettore x che contiene le osservazioni
+w = np.array([[0.04, 1.32, -1.48], [-0.03, 0.7, -0.85]]) #un peso per ciascuna classe
+
+multinomial_regression1(x, w)
