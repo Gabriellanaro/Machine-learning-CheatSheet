@@ -1185,8 +1185,8 @@ def multinomial_regression1(x, w):
             for k, theta_k in enumerate(softmax_type):
                 print(f"Probabilità che x{i+1} ({x_i}) appartenga a classe {k+1} = {theta_k:.4f}")
 
-# # Esempio di utilizzo
-x = np.array([[1.0, -5.52, -4.69]]) #vettore x che contiene le osservazioni
-w = np.array([[0.04, 1.32, -1.48], [-0.03, 0.7, -0.85]]) #un peso per ciascuna classe
+# # # Esempio di utilizzo
+# x = np.array([[1.0, -5.52, -4.69]]) #vettore x che contiene le osservazioni
+# w = np.array([[0.04, 1.32, -1.48], [-0.03, 0.7, -0.85]]) #un peso per ciascuna classe
 
-multinomial_regression1(x, w)
+# multinomial_regression1(x, w)
